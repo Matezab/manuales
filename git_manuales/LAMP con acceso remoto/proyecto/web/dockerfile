@@ -1,0 +1,22 @@
+FROM php:8.1-apache
+
+# Instalar extensiones necesarias 
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install pdo pdo_mysql mysqli
+
+# Habilitar módulos de Apache necesarios
+RUN a2enmod rewrite
+
+# Copiar el contenido de la carpeta del proyecto web
+COPY . /var/www/html/
+
+# Ajustar los permisos del directorio web
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html

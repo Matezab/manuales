@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: lamp_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mi_portafolio
+      MYSQL_USER: mi_usuario
+      MYSQL_PASSWORD: mi_password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - lamp_net
+
+  web:
+    build: ./web
+    container_name: lamp_web
+    volumes:
+      - ./pagina:/var/www/html
+    ports:
+      - "8082:80"
+    depends_on:
+      - db
+    networks:
+      - lamp_net
+
+volumes:
+  db_data:
+
+networks:
+  lamp_net:
